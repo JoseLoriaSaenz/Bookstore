@@ -58,6 +58,7 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="Post-Deployment" />
+    <Folder Include="Pre-Deployment" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Books.sql" />
