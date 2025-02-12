@@ -6,6 +6,9 @@ namespace BookstoreAPI.Repositories
     {
         private BookstoreContext _dbContext = context;
 
+        /// <summary>
+        /// Returns the repository Books using the database context
+        /// </summary>
         public IRepository<Book> Books
         {
             get
@@ -13,7 +16,12 @@ namespace BookstoreAPI.Repositories
                 return new Repository<Book>(_dbContext);
             }
         }
+        
 
+        /// <summary>
+        /// Commits any repository change into the database context
+        /// </summary>
+        /// <returns>Nothing</returns>
         public async Task Commit()
         {
             await _dbContext.SaveChangesAsync();
