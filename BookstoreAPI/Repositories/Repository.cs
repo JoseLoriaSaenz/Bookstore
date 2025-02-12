@@ -15,32 +15,34 @@ namespace BookstoreAPI.Repositories
             dbContext = context;
             dbSet = context.Set<TEntity>();
         }
-        public virtual void Delete(int id)
+        public async Task Delete(int id)
         {
-            TEntity? entityToDelete = dbSet.Find(id);
-            if (entityToDelete != null) 
+            TEntity? entityToDelete = await dbSet.FindAsync(id);
+            if (entityToDelete != null)
                 dbSet.Remove(entityToDelete);
         }
 
-        public virtual IEnumerable<TEntity> Find(string query)
+        public async Task<IEnumerable<TEntity?>> Find(string query)
         {
             FormattableString formattableString = FormattableStringFactory.Create(query);
-            return dbSet.FromSql(formattableString);
+            return await dbSet.FromSql(formattableString).ToListAsync();
         }
 
-        public virtual IEnumerable<TEntity> GetAll()
+        public async Task<IEnumerable<TEntity?>> GetAll()
         {
-            return dbSet.AsQueryable();
+            return await dbSet.ToListAsync();
         }
 
-        public virtual TEntity GetById(int id)
-        {    
-            return dbSet.Find(id);
-        }
-
-        public virtual void Insert(TEntity entity)
+        public async Task<TEntity?> GetById(int id)
         {
-            dbSet.Add(entity);           
+            var found = await dbSet.FindAsync(id);
+            return await dbSet.FindAsync(id);
+        }
+
+        public async Task Insert(TEntity entity)
+        {
+            await dbSet.AddAsync(entity);
+
         }
     }
 }

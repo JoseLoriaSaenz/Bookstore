@@ -20,9 +20,9 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpGet("GetBooks")]
-        public ActionResult<IEnumerable<Book>> GetBooks()
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
-            var result = _unitOfWork.Books.GetAll();
+            var result = await _unitOfWork.Books.GetAll();
             if (!result.Any())
                 return NoContent();
 
@@ -31,9 +31,9 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpGet("GetBookbyId")]
-        public ActionResult<Book> GetBookById(int id)
+        public async Task<ActionResult<Book>> GetBookById(int id)
         {
-            var result = _unitOfWork.Books.GetById(id);
+            var result = await _unitOfWork.Books.GetById(id);
             if (result == null)
                 return NoContent();
 
@@ -41,29 +41,29 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpGet("SearchBooks")]
-        public ActionResult<IEnumerable<Book>> SearchBooks(string query)
+        public async Task<ActionResult<IEnumerable<Book>>> SearchBooks(string query)
         {
             try
             {
-                var result = _unitOfWork.Books.Find(query);
+                var result = await _unitOfWork.Books.Find(query);
                 if (result == null)
                     return NoContent();
 
                 return Ok(result);
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
-         }
+        }
 
         [HttpPost("AddBook")]
-        public ActionResult AddBook(Book book)
+        public async Task<ActionResult> AddBook(Book book)
         {
             try
             {
-                _unitOfWork.Books.Insert(book);
-                _unitOfWork.Commit();
+                await _unitOfWork.Books.Insert(book);
+                await _unitOfWork.Commit();
 
                 return Created();
 
@@ -75,12 +75,12 @@ namespace BookstoreAPI.Controllers
         }
 
         [HttpDelete("DeleteBook")]
-        public ActionResult DeleteBook(int id)
+        public async Task<ActionResult> DeleteBook(int id)
         {
             try
             {
-                _unitOfWork.Books.Delete(id);
-                _unitOfWork.Commit();
+                await _unitOfWork.Books.Delete(id);
+                await _unitOfWork.Commit();
 
                 return Ok();
             }

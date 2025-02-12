@@ -8,14 +8,15 @@ namespace BookstoreAPI.Repositories
 
         public IRepository<Book> Books
         {
-            get {
+            get
+            {
                 return new Repository<Book>(_dbContext);
             }
         }
 
-        public void Commit()
+        public async Task Commit()
         {
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
