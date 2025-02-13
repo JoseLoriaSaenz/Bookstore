@@ -74,7 +74,7 @@ namespace UnitTest
                                 new() {
                                         Id = 3,
                                         Author = "Ann Rice",
-                                        Title = "Interview with the vampire",
+                                        Title = "Merrick",
                                         Genre = "Fantasy",
                                         ISBN = "978-0394498218",
                                         PublishedDate = DateTime.Now.Date }

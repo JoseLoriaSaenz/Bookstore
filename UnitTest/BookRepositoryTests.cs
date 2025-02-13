@@ -62,7 +62,7 @@ namespace UnitTest
                                 new() {
                                         Id = 3,
                                         Author = "Ann Rice",
-                                        Title = "Interview with the vampire",
+                                        Title = "Merrick",
                                         Genre = "Fantasy",
                                         ISBN = "978-0394498218",
                                         PublishedDate = DateTime.Now.Date }
@@ -135,7 +135,7 @@ namespace UnitTest
         [Test]
         public async Task BookRepository_Delete_Success()
         {
-            //Assert
+            //Arrange
 
             // Act
             var result = await repository.Delete(2);
@@ -143,6 +143,7 @@ namespace UnitTest
             // Assert
             Assert.That(result, Is.EqualTo(true));
         }
+
         #endregion[Test]
     }
 }
