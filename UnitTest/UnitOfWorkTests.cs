@@ -1,38 +1,44 @@
-﻿using BookstoreAPI.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BookstoreAPI.Models;
 using BookstoreAPI.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
 
 namespace UnitTest
 {
-    public class BookRepositoryTests
+    public class UnitOfWorkTests
     {
         #region Properties
 
         private DbContextOptions<BookstoreContext> dbContextOptions;
-        private Repository<Book> repository;
+        private readonly BookstoreContext context;
+        private UnitOfWork unitOfWork;
         private List<Book> books;
+
         #endregion
 
         #region Constructor
-        public BookRepositoryTests()
+        public UnitOfWorkTests()
         {
             var dbName = $"AuthorPostsDb_{DateTime.Now.ToFileTimeUtc()}";
             dbContextOptions = new DbContextOptionsBuilder<BookstoreContext>()
                 .UseInMemoryDatabase(dbName)
                 .Options;
+            context = CreateDBContextInMemory();
         }
 
         #endregion
 
         #region Private Methods
-        private Repository<Book> CreateBooksRepositoryAsync()
-        {
-            BookstoreContext context = new BookstoreContext(dbContextOptions);
-            PopulateDataAsync(context);
-            return new Repository<Book>(context);
-        }
 
+        private BookstoreContext CreateDBContextInMemory()
+        {
+            return new BookstoreContext(dbContextOptions);
+        }
         private void PopulateDataAsync(BookstoreContext context)
         {
             foreach (var book in books)
@@ -41,11 +47,17 @@ namespace UnitTest
                 context.SaveChangesAsync();
             };
         }
+        private UnitOfWork CreateUnitOfWork()
+        {
+            BookstoreContext context = new BookstoreContext(dbContextOptions);
+            return new UnitOfWork(context);
+        }
 
-        private static List<Book> GetBooksList() {
+        private static List<Book> GetBooksList()
+        {
 
-                List<Book> Books = [
-                                new() {
+            List<Book> Books = [
+                            new() {
                                         Id = 1,
                                         Author = "Ann Rice",
                                         Title = "Interview with the vampire",
@@ -66,20 +78,26 @@ namespace UnitTest
                                         Genre = "Fantasy",
                                         ISBN = "978-0394498218",
                                         PublishedDate = DateTime.Now.Date }
-                ];
+            ];
 
             return Books;
         }
 
         #endregion
 
-        #region Setup
+        #region Setup-TearDown
 
         [SetUp]
         public void Setup()
         {
             books = GetBooksList();
-            repository = CreateBooksRepositoryAsync();
+            unitOfWork = CreateUnitOfWork();
+        }
+
+        [OneTimeTearDown]
+        public void Cleanup()
+        {
+            context.Dispose();
         }
 
         #endregion
@@ -87,62 +105,18 @@ namespace UnitTest
         #region Tests
 
         [Test]
-        public async Task BookRepository_GetBooks_Success()
+        public void UnitOfWork_Books_is_not_null()
         {
+            //Arrange
+
+            //Act
+            var result = unitOfWork.Books;
+
             //Assert
-
-            // Act
-            var result = await repository.GetAll();
-
-            // Assert
-            Assert.That(books.Count, Is.EqualTo(result.Count()));
+            Assert.That(result, Is.Not.Null);
         }
 
-        [Test]
-        public async Task BookRepository_GetBookByIdAsync_Success()
-        {
-            //Assert
-            string authorName = "Ann Rice";
+        #endregion
 
-            // Act
-            var book = await repository.GetById(2);
-
-            // Assert
-            Assert.NotNull(book);
-            Assert.That(authorName, Is.EqualTo(book.Author));
-        }
-
-        [Test]
-        public async Task BookRepository_Add_Success()
-        {
-            //Assert
-            Book newBook = new()
-            {
-                Id = 4,
-                Author = "Ann Rice",
-                Title = "Merrick",
-                Genre = "Fantasy",
-                ISBN = "978-0394232218",
-                PublishedDate = new DateTime(1998, 07, 14)
-            };
-
-            // Act
-            var result = await repository.Insert(newBook);
-            // Assert
-            Assert.That(result, Is.EqualTo(true));
-        }
-
-        [Test]
-        public async Task BookRepository_Delete_Success()
-        {
-            //Assert
-
-            // Act
-            var result = await repository.Delete(2);
-
-            // Assert
-            Assert.That(result, Is.EqualTo(true));
-        }
-        #endregion[Test]
     }
 }
