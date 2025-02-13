@@ -27,13 +27,13 @@
         /// </summary>
         /// <param name="entity">TEntity information</param>
         /// <returns>Nothing</returns>
-        Task Insert(TEntity entity);
+        Task<bool> Insert(TEntity entity);
 
         /// <summary>
         /// Deletes a TEntity
         /// </summary>
         /// <param name="id">TEntity id to find the TEntity to be deleted</param>
         /// <returns>Nothing</returns>
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }

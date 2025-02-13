@@ -4,6 +4,7 @@ namespace BookstoreAPI.Models
 {
     public class Book
     {
+        [Required]
         public int Id { get; set; }
 
         [Required]

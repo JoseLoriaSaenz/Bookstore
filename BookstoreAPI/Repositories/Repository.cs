@@ -25,11 +25,16 @@ namespace BookstoreAPI.Repositories
         /// </summary>
         /// <param name="id">Entity's Id to be deleted</param>
         /// <returns>Nothing</returns>
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             TEntity? entityToDelete = await dbSet.FindAsync(id);
             if (entityToDelete != null)
+            {
                 dbSet.Remove(entityToDelete);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -69,10 +74,17 @@ namespace BookstoreAPI.Repositories
         /// </summary>
         /// <param name="entity">Entity's information</param>
         /// <returns>Nothing</returns>
-        public async Task Insert(TEntity entity)
+        public async Task<bool> Insert(TEntity entity)
         {
-            await dbSet.AddAsync(entity);
-
+            try
+            {
+                await dbSet.AddAsync(entity);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

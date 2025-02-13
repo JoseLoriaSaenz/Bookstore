@@ -110,10 +110,10 @@ namespace BookstoreAPI.Controllers
         {
             try
             {
-                await _unitOfWork.Books.Delete(id);
+                var result = await _unitOfWork.Books.Delete(id);
                 await _unitOfWork.Commit();
 
-                return Ok();
+                return Ok(result);
             }
             catch (Exception ex)
             {
