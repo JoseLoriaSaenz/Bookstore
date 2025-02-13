@@ -27,6 +27,7 @@ This project uses:
   1. EF for accessing the entities from the database.
   2. Implements a generic repository parttern.
   3. Includes a NUnit project for testing the UnitOfWork and the Repository classes.
+  4. Includes a Database Project for creating the table.
 
 ## This API usage goes as follows:
 
